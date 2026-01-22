@@ -1,20 +1,12 @@
-# Omnilex Agentic Retrieval Competition
+# Omnilex Agentic Retrieval Competition Starter Repo
 
-A Kaggle competition for Swiss legal citation retrieval. Given a legal query in English, retrieve relevant Swiss federal law and Federal Court decision (BGE) citations.
-
-## Overview
-
-| Aspect         | Details                                     |
-| -------------- | ------------------------------------------- |
-| **Task**       | Cross-lingual legal citation retrieval      |
-| **Input**      | Legal queries (English)                     |
-| **Output**     | Swiss legal citations (law/BGE format)      |
-| **Metric**     | Macro F1 (average F1 across queries)        |
-| **Submission** | Kaggle Notebook (code competition)          |
+Official starter repo for Kaggle competiton https://www.kaggle.com/competitions/llm-agentic-legal-information-retrieval/host/launch-checklist
 
 ## Quick Start
 
 ### Installation
+
+(Tested with Ubuntu-24.04 in WSL)
 
 ```bash
 # Clone the repository
@@ -36,13 +28,7 @@ pip install -e .
 
 ### Download Data
 
-```bash
-# Download training data and create sample files
-python scripts/download_data.py
-
-# Build search indices
-python scripts/build_indices.py
-```
+Get it from Kaggle into `data` directory
 
 ### Run Baselines
 
@@ -62,75 +48,11 @@ Both notebooks work in VSCode and can be submitted to Kaggle.
 
 ```bash
 python scripts/validate_submission.py submission.csv
-python scripts/validate_submission.py submission.csv --gold gold.csv  # with scoring
 ```
 
 ## Data Format
 
-### Training Data (`train.csv`)
-
-| Column           | Description                                  |
-| ---------------- | -------------------------------------------- |
-| `query_id`       | Unique query identifier                      |
-| `query`          | Legal question (English)                     |
-| `gold_citations` | Ground truth citations (semicolon-separated) |
-
-### Test Data (`test.csv`)
-
-| Column     | Description              |
-| ---------- | ------------------------ |
-| `query_id` | Unique query identifier  |
-| `query`    | Legal question (English) |
-
-### Submission Format (`submission.csv`)
-
-```csv
-query_id,predicted_citations
-q_001,"Art. 1 ZGB;BGE 116 Ia 56"
-q_002,"Art. 117 StGB"
-```
-
-## Citation Formats
-
-### Federal Laws
-
-Format: `Art. [article] [Abs. paragraph] [LAW]`
-
-Examples:
-
-- `Art. 1 ZGB` - Civil Code, Article 1
-- `Art. 11 Abs. 2 OR` - Code of Obligations, Art. 11 para. 2
-- `Art. 117 StGB` - Criminal Code, Article 117
-
-All 1026 Swiss law abbreviations are supported, loaded from `data/abbrev-translations.json`.
-
-Common abbreviations: ZGB (Civil Code), OR (Code of Obligations), StGB (Criminal Code), BV (Constitution)
-
-### Court Decisions (BGE)
-
-Format: `BGE [volume] [section] [page] [E. consideration]`
-
-Examples:
-
-- `BGE 116 Ia 56` - Volume 116, Constitutional Law section, page 56
-- `BGE 121 III 38 E. 2b` - With consideration reference
-- `BGE 141 III 513 E. 5.3.1` - With decimal consideration reference
-
-See `docs/swiss_citation_primer.md` for detailed format documentation.
-
-## Evaluation
-
-The primary metric is **Macro F1**:
-
-1. For each query, compute F1 between predicted and gold citation sets
-2. Average F1 scores across all queries
-
-```python
-from omnilex.evaluation import macro_f1
-
-scores = macro_f1(predictions, gold)
-print(f"Macro F1: {scores['macro_f1']:.4f}")
-```
+See Kaggle
 
 ## Project Structure
 
@@ -141,9 +63,8 @@ print(f"Macro F1: {scores['macro_f1']:.4f}")
 │   ├── retrieval/         # BM25 search & tools
 │   └── llm/               # LLM loading & prompts
 ├── notebooks/             # Baseline notebooks
-├── scripts/               # Data & utility scripts
+├── utils/                 # Data & utility scripts
 ├── tests/                 # Test suite
-├── docs/                  # Documentation
 └── data/                  # Data directory
 ```
 
@@ -154,27 +75,11 @@ print(f"Macro F1: {scores['macro_f1']:.4f}")
 - rank-bm25 (for keyword search)
 - pandas, numpy, scikit-learn
 
-For Kaggle submissions, you'll need to:
+For Kaggle submissions, you may need to (depending on your solution):
 
 1. Upload your GGUF model as a Kaggle dataset
 2. Upload pre-built indices as a Kaggle dataset
 3. Package the `omnilex` library
-
-## Rules Summary
-
-- Code competition: Submit Kaggle notebooks
-- No internet access during evaluation
-- External pretrained models allowed (uploaded as datasets)
-- Teams up to 5 members
-- See `docs/competition_rules.md` for full rules
-
-## Resources
-
-- [Swiss Citation Format Primer](docs/swiss_citation_primer.md)
-- [Competition Rules](docs/competition_rules.md)
-- [Submission Guide](docs/submission_guide.md)
-- [LEXam Dataset](https://huggingface.co/datasets/LEXam-Benchmark/LEXam)
-- [Fedlex Portal](https://www.fedlex.admin.ch/)
 
 ## License
 
@@ -182,4 +87,4 @@ Apache 2.0 - See [LICENSE](LICENSE)
 
 ## Contact
 
-For questions about the competition, please open an issue on this repository.
+For public questions about the competition please use the "Discussion" tab or open an issue on this repository. For private questions reahc out to host on Kaggle or ari.jordan@omnilex.ai
