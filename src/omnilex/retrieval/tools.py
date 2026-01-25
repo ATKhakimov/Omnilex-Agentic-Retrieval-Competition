@@ -39,6 +39,7 @@ Example queries: "contract formation requirements", "Vertragsabschluss", "divorc
         self.index = index
         self.top_k = top_k
         self.max_excerpt_length = max_excerpt_length
+        self._last_results: list[dict] = []
 
     def __call__(self, query: str) -> str:
         """Execute search and return formatted results.
@@ -61,9 +62,11 @@ Example queries: "contract formation requirements", "Vertragsabschluss", "divorc
             Formatted string with search results
         """
         if not query or not query.strip():
+            self._last_results = []
             return "Error: Empty query. Please provide search terms."
 
         results = self.index.search(query, top_k=self.top_k)
+        self._last_results = results
 
         if not results:
             return f"No relevant federal laws found for: '{query}'"
@@ -80,6 +83,14 @@ Example queries: "contract formation requirements", "Vertragsabschluss", "divorc
             formatted.append(f"- {citation}: {text}")
 
         return "\n".join(formatted)
+
+    def get_last_citations(self) -> list[str]:
+        """Return citations from the last search.
+
+        Returns:
+            List of citation strings from the most recent search
+        """
+        return [doc.get("citation", "") for doc in self._last_results if doc.get("citation")]
 
     def search_with_metadata(self, query: str) -> list[dict]:
         """Execute search and return full result objects.
@@ -125,6 +136,7 @@ Example queries: "negligence standard of care", "Sorgfaltspflicht", "contract in
         self.index = index
         self.top_k = top_k
         self.max_excerpt_length = max_excerpt_length
+        self._last_results: list[dict] = []
 
     def __call__(self, query: str) -> str:
         """Execute search and return formatted results.
@@ -147,9 +159,11 @@ Example queries: "negligence standard of care", "Sorgfaltspflicht", "contract in
             Formatted string with search results
         """
         if not query or not query.strip():
+            self._last_results = []
             return "Error: Empty query. Please provide search terms."
 
         results = self.index.search(query, top_k=self.top_k)
+        self._last_results = results
 
         if not results:
             return f"No relevant court decisions found for: '{query}'"
@@ -166,6 +180,14 @@ Example queries: "negligence standard of care", "Sorgfaltspflicht", "contract in
             formatted.append(f"- {citation}: {text}")
 
         return "\n".join(formatted)
+
+    def get_last_citations(self) -> list[str]:
+        """Return citations from the last search.
+
+        Returns:
+            List of citation strings from the most recent search
+        """
+        return [doc.get("citation", "") for doc in self._last_results if doc.get("citation")]
 
     def search_with_metadata(self, query: str) -> list[dict]:
         """Execute search and return full result objects.
