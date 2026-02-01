@@ -146,3 +146,7 @@ def temp_gold_file():
 
     if temp_path.exists():
         temp_path.unlink()
+
+
+# Re-export fixtures from test_graph for use in all test modules
+pytest_plugins = ["tests.test_graph"]
